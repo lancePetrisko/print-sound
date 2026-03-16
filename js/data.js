@@ -8,7 +8,7 @@ const DATA = {
       { label: "Danceability", val: 0.67, color: "#f5a623" },
       { label: "Valence", val: 0.44, color: "#e8445a" },
       { label: "Acousticness", val: 0.21, color: "#5b9cf6" },
-      { label: "Instrumentalness", val: 0.38, color: "#a78bfa" },
+      { label: "Instrumentals", val: 0.38, color: "#a78bfa" },
     ],
     tracks: [
       { emoji: "🎵", name: "Blinding Lights", artist: "The Weeknd", duration: "3:20", pop: 0.97 },
@@ -61,7 +61,7 @@ const DATA = {
       { label: "Danceability", val: 0.75, color: "#f5a623" },
       { label: "Valence", val: 0.56, color: "#e8445a" },
       { label: "Acousticness", val: 0.33, color: "#5b9cf6" },
-      { label: "Instrumentalness", val: 0.29, color: "#a78bfa" },
+      { label: "Instrumental", val: 0.29, color: "#a78bfa" },
     ],
     tracks: [
       { emoji: "🎤", name: "Rich Flex", artist: "Drake & 21 Savage", duration: "4:03", pop: 0.94 },
@@ -114,7 +114,7 @@ const DATA = {
       { label: "Danceability", val: 0.61, color: "#f5a623" },
       { label: "Valence", val: 0.52, color: "#e8445a" },
       { label: "Acousticness", val: 0.48, color: "#5b9cf6" },
-      { label: "Instrumentalness", val: 0.44, color: "#a78bfa" },
+      { label: "Instrumental", val: 0.44, color: "#a78bfa" },
     ],
     tracks: [
       { emoji: "🌙", name: "Thriller", artist: "Michael Jackson", duration: "5:57", pop: 0.96 },
