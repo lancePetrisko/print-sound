@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SoundPrint — Your Music Identity</title>
+<title>PrintSound — Your Music Identity</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/styles.css" />
 <link rel="stylesheet" href="css/header.css" />
@@ -15,16 +15,43 @@
 <link rel="stylesheet" href="css/recent.css" />
 <link rel="stylesheet" href="css/footer.css" />
 <link rel="stylesheet" href="css/responsive.css" />
+<link rel="stylesheet" href="css/login.css" />
 </head>
 <body>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-screen" class="login-screen" style="display:none;">
+  <div class="login-card">
+    <div class="login-logo">PRINT<span>SOUND</span></div>
+    <h2 class="login-heading">Your Music Identity</h2>
+    <p class="login-desc">Connect your Spotify account to see your top tracks, artists, genres, listening personality, and more — across three time ranges.</p>
+    <button class="connect-btn" onclick="Auth.login()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+      Connect with Spotify
+    </button>
+    <p class="login-note">We only read your listening data. Nothing is stored on our servers.</p>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" class="loading-overlay" style="display:none;">
+  <div class="loading-spinner"></div>
+  <p class="loading-text">Pulling your stats from Spotify...</p>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
 
 <!-- HEADER -->
 <header>
   <div class="logo">PRINT<span>SOUND</span></div>
-  <div class="time-tabs">
-    <button class="time-tab active" onclick="setRange(this,'short')">4 Weeks</button>
-    <button class="time-tab" onclick="setRange(this,'medium')">6 Months</button>
-    <button class="time-tab" onclick="setRange(this,'long')">All Time</button>
+  <div class="header-right">
+    <div class="time-tabs">
+      <button class="time-tab active" onclick="setRange(this,'short')">4 Weeks</button>
+      <button class="time-tab" onclick="setRange(this,'medium')">6 Months</button>
+      <button class="time-tab" onclick="setRange(this,'long')">All Time</button>
+    </div>
+    <button id="logout-btn" class="logout-btn" style="display:none;" onclick="Auth.logout()">Logout</button>
   </div>
 </header>
 
@@ -32,23 +59,23 @@
 <section class="hero" id="hero">
   <div class="hero-left">
     <div class="hero-label">Your Music Identity</div>
-    <h1 class="hero-name">Alex<em>Rivera</em></h1>
+    <h1 class="hero-name">Your<em>Stats</em></h1>
     <p class="hero-desc">Based on your listening history across 3 time ranges, here's what your music says about you — your patterns, obsessions, and sonic fingerprint.</p>
     <div class="stat-pills">
       <div class="stat-pill">
-        <span class="stat-pill-val" id="hours-val">847</span>
-        <span class="stat-pill-label">Hours Listened</span>
+        <span class="stat-pill-val" id="hours-val">0</span>
+        <span class="stat-pill-label">Hours (est.)</span>
       </div>
       <div class="stat-pill">
-        <span class="stat-pill-val" id="tracks-val">1,204</span>
-        <span class="stat-pill-label">Unique Tracks</span>
+        <span class="stat-pill-val" id="tracks-val">0</span>
+        <span class="stat-pill-label">Top Tracks</span>
       </div>
       <div class="stat-pill">
-        <span class="stat-pill-val" id="artists-val">312</span>
-        <span class="stat-pill-label">Artists</span>
+        <span class="stat-pill-val" id="artists-val">0</span>
+        <span class="stat-pill-label">Top Artists</span>
       </div>
       <div class="stat-pill">
-        <span class="stat-pill-val" id="streak-val">47</span>
+        <span class="stat-pill-val" id="streak-val">0</span>
         <span class="stat-pill-label">Day Streak</span>
       </div>
     </div>
@@ -56,11 +83,9 @@
 
   <div class="vibe-card">
     <div class="vibe-title">Your Sound Profile</div>
-    <div class="vibe-identity" id="vibe-id">Late Night Explorer</div>
-    <p class="vibe-sub" id="vibe-desc">High energy, emotionally complex music with a taste for deep cuts. You discover artists before they're mainstream and return to albums obsessively.</p>
-    <div class="audio-features" id="af-list">
-      <!-- injected by JS -->
-    </div>
+    <div class="vibe-identity" id="vibe-id">—</div>
+    <p class="vibe-sub" id="vibe-desc">Connect Spotify to discover your listening personality.</p>
+    <div class="audio-features" id="af-list"></div>
   </div>
 </section>
 
@@ -107,15 +132,19 @@
 </section>
 
 <footer>
-  <span>SoundPrint — Demo with mock data · Connect your Spotify to see real stats</span>
-  <button class="connect-btn" onclick="alert('In production, this redirects to Spotify OAuth!')">
+  <span>PrintSound — Powered by the Spotify Web API</span>
+  <button class="connect-btn" id="footer-connect" onclick="Auth.login()">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
     Connect Spotify
   </button>
 </footer>
 
+</div><!-- /dashboard -->
+
 <script src="js/data.js"></script>
 <script src="js/radar.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/spotify.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
