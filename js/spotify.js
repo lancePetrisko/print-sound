@@ -97,7 +97,7 @@ function transformData(topTracks, topArtists, recentItems, audioProfile) {
   // Top tracks (first 10 for display)
   const tracks = topTracks.slice(0, 10).map(t => ({
     name: t.name,
-    artist: t.artists.map(a => a.name).join(', '),
+    artist: (t.artists || []).map(a => a.name).join(', '),
     duration: fmtDuration(t.duration_ms),
     pop: (t.popularity || 50) / 100,
     image: getImage(t.album?.images),
@@ -106,7 +106,7 @@ function transformData(topTracks, topArtists, recentItems, audioProfile) {
   // Top artists (first 8 for display)
   const artists = topArtists.slice(0, 8).map((a, i) => ({
     name: a.name,
-    genre: a.genres.length > 0 ? a.genres[0] : 'Unknown',
+    genre: (a.genres && a.genres.length > 0) ? a.genres[0] : 'Unknown',
     rank: `#${i + 1}`,
     image: getImage(a.images),
   }));
@@ -114,7 +114,7 @@ function transformData(topTracks, topArtists, recentItems, audioProfile) {
   // Genre aggregation from all artists
   const genreCounts = {};
   topArtists.forEach(a => {
-    a.genres.forEach(g => {
+    (a.genres || []).forEach(g => {
       genreCounts[g] = (genreCounts[g] || 0) + 1;
     });
   });
