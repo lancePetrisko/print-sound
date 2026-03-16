@@ -1,0 +1,7 @@
+@media (max-width: 900px) {
+  header { padding: 20px 24px; }
+  .hero { grid-template-columns: 1fr; padding: 40px 24px 32px; }
+  .section { padding: 0 24px 48px; }
+  .genre-section { grid-template-columns: 1fr; }
+  footer { padding: 24px; flex-direction: column; gap: 16px; text-align: center; }
+}
