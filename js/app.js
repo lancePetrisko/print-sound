@@ -88,13 +88,13 @@ async function loadLiveData(range) {
 // ─── RENDER LIVE DATA ────────────────────────────────────────────────
 // Uses the transformed shape from spotify.js
 function renderLive(d, range) {
-  // hero stats
+  // hero stats — show range-meaningful numbers
   animateNum('hours-val', d.hours);
-  animateNum('tracks-val', d.tracks);
-  animateNum('artists-val', d.artists);
+  animateNum('tracks-val', d.tracks_list.length);
+  animateNum('artists-val', d.uniqueArtists);
   animateNum('streak-val', d.streak);
 
-  // vibe
+  // vibe — always populated now (genre-based fallback when audio features unavailable)
   document.getElementById('vibe-id').textContent = d.vibeId;
   document.getElementById('vibe-desc').textContent = d.vibeDesc;
 
@@ -102,7 +102,7 @@ function renderLive(d, range) {
   const labels = { short: 'Last 4 Weeks', medium: 'Last 6 Months', long: 'All Time' };
   document.getElementById('tracks-label').textContent = labels[range];
 
-  // audio features
+  // audio features — show bars even from genre-estimated data
   const afEl = document.getElementById('af-list');
   if (d.audioFeatures.length > 0) {
     afEl.innerHTML = d.audioFeatures.map(f => `
@@ -113,7 +113,16 @@ function renderLive(d, range) {
       </div>
     `).join('');
   } else {
-    afEl.innerHTML = '<p style="color:var(--muted); font-size:0.8rem;">Audio feature data unavailable for this account.</p>';
+    // Build feature bars from the radar estimates (genre-based)
+    const radarLabels = ['Energy', 'Danceability', 'Valence', 'Acousticness', 'Instrumental'];
+    const radarColors = ['#1db954', '#f5a623', '#e8445a', '#5b9cf6', '#a78bfa'];
+    afEl.innerHTML = d.radar.slice(0, 5).map((val, i) => `
+      <div class="af-row">
+        <span class="af-label">${radarLabels[i]}</span>
+        <div class="af-track"><div class="af-fill" style="width:${val*100}%; background:${radarColors[i]}; animation-delay:${i*0.1}s"></div></div>
+        <span class="af-val">${Math.round(val*100)}%</span>
+      </div>
+    `).join('');
   }
 
   // tracks — uses real album art images
@@ -143,21 +152,25 @@ function renderLive(d, range) {
         : `<div class="artist-avatar">🎤</div>`}
       <div class="artist-name">${a.name}</div>
       <div class="artist-rank">${a.rank}</div>
-      <div class="artist-genre">${a.genre}</div>
+      ${a.genre ? `<div class="artist-genre">${a.genre}</div>` : ''}
     </div>
   `).join('');
 
   // genres
   const genreList = document.getElementById('genre-list');
-  genreList.innerHTML = d.genres.map((g, i) => `
-    <div class="genre-row" style="animation-delay:${i*0.08}s">
-      <span class="genre-name">${g.name}</span>
-      <div class="genre-bar-track">
-        <div class="genre-bar-fill" style="width:${g.pct}%; background:${g.color}; animation-delay:${i*0.1}s"></div>
+  if (d.genres.length === 0) {
+    genreList.innerHTML = '<p style="color:rgba(255,255,255,0.4); font-size:0.9rem; padding:1rem 0;">Genre data not available for your top artists.</p>';
+  } else {
+    genreList.innerHTML = d.genres.map((g, i) => `
+      <div class="genre-row" style="animation-delay:${i*0.08}s">
+        <span class="genre-name">${g.name}</span>
+        <div class="genre-bar-track">
+          <div class="genre-bar-fill" style="width:${g.pct}%; background:${g.color}; animation-delay:${i*0.1}s"></div>
+        </div>
+        <span class="genre-pct">${g.pct}%</span>
       </div>
-      <span class="genre-pct">${g.pct}%</span>
-    </div>
-  `).join('');
+    `).join('');
+  }
 
   // recent — uses real album art
   const recentGrid = document.getElementById('recent-grid');
